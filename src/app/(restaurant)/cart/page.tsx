@@ -5,6 +5,7 @@ import { CartProductCard } from "@/components"; // Importamos el componente Cart
 import { initialData } from "@/interfaces/seed";
 import Link from "next/link";
 import clsx from "clsx"; // Importamos clsx para manejar clases condicionales
+import { redirect } from "next/navigation";
 
 // Datos iniciales del carrito
 const initialCartData = [
@@ -50,6 +51,10 @@ export default function CartPage() {
   // Función para eliminar un producto del carrito
   const handleRemove = (slug: string) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.slug !== slug));
+  };
+
+  if (initialCartData.length === 0){
+    redirect("/empty")
   };
 
   // Función para actualizar el total de un producto específico
