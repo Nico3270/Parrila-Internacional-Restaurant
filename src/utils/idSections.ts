@@ -2,14 +2,14 @@
 type Seccion = { [clave: string]: string };
 
 const secciones: Seccion[] = [
-    { "Platos fuertes": "platos_fuertes" },
-    { "Entradas": "entradas" },
-    { "Hamburguesas": "hamburguesas" },
-    { "Perros calientes": "perros_calientes" },
-    { "Cervezas": "cervezas" },
-    { "Bebidas calientes": "bebidas_calientes" },
-    { "Cocteles": "cocteles" },
-    {"Pizza" : "pizza"}
+    { "PLATOS_FUERTES": "platos_fuertes" },
+    { "ENTRADAS": "entradas" },
+    { "HAMBURGUESAS": "hamburguesas" },
+    { "PERROS_CALIENTES": "perros_calientes" },
+    { "CERVEZAS": "cervezas" },
+    { "BEBIDAS_CALIENTES": "bebidas_calientes" },
+    { "COCTELES": "cocteles" },
+    {"PIZZA" : "pizza"}
 ];
 
 export const idSecciones = (id: string): string | null => {
@@ -20,5 +20,5 @@ export const idSecciones = (id: string): string | null => {
             }
         }
     }
-    return "Not found";
+    return null;
 };

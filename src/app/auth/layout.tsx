@@ -6,7 +6,6 @@ export default function AuthLayout({
 }) {
   return (
     <div>
-      <h1>Hello Root Layout Auth</h1>
       {children}
     </div>
   );

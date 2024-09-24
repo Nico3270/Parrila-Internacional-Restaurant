@@ -38,9 +38,8 @@ export const ResponsiveSlideShow: React.FC<Props> = ({ images, title }) => {
               <Image
                 src={`/imgs/${image}`}
                 alt={title}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
+                fill
+                className="rounded-lg object-cover"
                 style={{ height: '100%' }} // Mantener altura sin desbordarse
               />
             </div>

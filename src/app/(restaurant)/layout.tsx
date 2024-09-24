@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Footer, TopMenu, TopMenuMobile } from "@/components";
+import { TopMenu, TopMenuMobile, Footer } from "@/components";
 
 export default function RestaurantLayout({
   children,

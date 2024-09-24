@@ -79,8 +79,7 @@ export const CartProductMobile: React.FC<CartProductCardProps> = ({
           alt={product.titulo}
           width={300}
           height={200}
-          objectFit="cover"
-          className="rounded-lg mx-auto"
+          className="rounded-lg mx-auto object-cover"
         />
       </div>
 

@@ -26,11 +26,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <Image
             src={`/imgs/${displayImage}`} // Primera imagen
             alt={product.titulo}
-            layout="fill"
-            objectFit="cover"
-            className="rounded-lg"
-            onMouseEnter={()=> setDisplayImage(product.images[1])}
-            onMouseLeave={()=> setDisplayImage(product.images[0])}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Agregar la propiedad sizes para mejorar el rendimiento
+            className="rounded-lg object-cover" // Usar object-cover directamente con Tailwind
+            onMouseEnter={() => setDisplayImage(product.images[1])}
+            onMouseLeave={() => setDisplayImage(product.images[0])}
           />
 
           {/* Botón de favoritos en la esquina superior derecha */}
@@ -60,7 +60,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             ? `${product.description.substring(0, 80)}...`
             : product.description}
           {product.description.length > 80 && (
-            <Link href={`/product/${product.slug}`} className="text-red-500 hover:underline ml-1">
+            <Link
+              href={`/product/${product.slug}`}
+              className="text-red-500 hover:underline ml-1"
+            >
               Ver más
             </Link>
           )}

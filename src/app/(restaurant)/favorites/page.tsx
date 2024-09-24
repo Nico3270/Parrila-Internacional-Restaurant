@@ -1,5 +1,5 @@
 import { ProductGrid } from "@/components";
-import { initialData } from "@/interfaces/seed";
+import { initialData } from "@/seed/seed";
 import { FaHeart } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";

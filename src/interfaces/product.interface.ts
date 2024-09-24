@@ -1,36 +1,90 @@
 export interface Product {
-    id?: string;  // Identificador único del producto
-    titulo: string;  // Título del producto
-    description: string;  // Descripción detallada del producto
-    shortDescription?: string;  // Descripción corta opcional
-    images: string[];  // URLs de las imágenes del producto (relación con Cloudinary o similar)
-    available: boolean;  // Disponibilidad del producto
-    precio: number;  // Precio del producto
-    discountPrice?: number;  // Precio con descuento opcional
-    slug: string;  // URL amigable para SEO
-    tags: string[];  // Etiquetas para filtrar productos (e.g., vegano, sin gluten, etc.)
-    seccion: "Platos fuertes" | "Entradas" | "Hamburguesas" | "Perros calientes" | "Cervezas" | "Bebidas calientes" | "Cocteles" | "Pizza";  // Sección del menú a la que pertenece
-    priority?: number;  // Prioridad para paginación o promociones
-    featured?: boolean;  // Producto destacado o promocionado
-    isAvailableDuring?: { start: string; end: string };  // Horario o fecha de disponibilidad del producto (opcional)
-    createdAt?: Date;  // Fecha de creación
-    updatedAt?: Date;  // Fecha de la última modificación
-    ingredients?: string[];  // Lista de ingredientes (opcional)
-    nutritionalInfo?: { calories: number; protein: number; fat: number; carbohydrates: number };  // Información nutricional opcional
-    relatedProducts?: string[];  // IDs de productos relacionados (para recomendaciones)
-    tipo: "Comida" | "Entrada" | "Bebidas" | "Postres";
-    reviews?: Review [];
-    customizationOptions?: {
-        extras: { name: string; price: number }[];  // Ingredientes o opciones adicionales con precios
-        choices: {
-          name: string;  // Opción de personalización (e.g., "Salsa", "Punto de cocción")
-          values: string[];  // Valores disponibles (e.g., "Poco hecho", "Bien hecho")
-        }[];
-};}
+  id: string;
+  titulo: string;
+  description: string;
+  shortDescription?: string;
+  images: string[];  // URLs de las imágenes del producto
+  available: boolean;
+  precio: number;
+  discountPrice?: number;
+  slug: string;
+  tags: string[];
+  seccion: SeccionEnum;  // Usar el enum en lugar de string
+  priority?: number;
+  featured?: boolean;
+  isAvailableDuring?: { start: string; end: string };
+  createdAt?: Date;
+  updatedAt?: Date;
+  tipo: TipoEnum;  // Usar el enum en lugar de string
+  reviews?: Review[];
+  customizationOptions?: {
+    extras: { name: string; price: number }[];
+    choices: {
+      name: string;
+      values: string[];
+    }[];
+  };
+}
+
+export interface CartProduct {
+  id: string;
+  slug: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image: string;
+  opcionesPersonalizacion: { name: string; price: number }[];
+  comentario?: string;
+  cartItemId: string; // Identificador único del producto en el carrito
+}
+
+export enum SeccionEnum {
+  PLATOS_FUERTES = "PLATOS_FUERTES",
+  ENTRADAS = "ENTRADAS",
+  HAMBURGUESAS = "HAMBURGUESAS",
+  PERROS_CALIENTES = "PERROS_CALIENTES",
+  CERVEZAS = "CERVEZAS",
+  BEBIDAS_CALIENTES = "BEBIDAS_CALIENTES",
+  COCTELES = "COCTELES",
+  PIZZA = "PIZZA",
+}
+
+export enum TipoEnum {
+  COMIDA = "COMIDA",
+  ENTRADAS = "ENTRADAS",
+  BEBIDAS = "BEBIDAS",
+  POSTRES = "POSTRES",
+}
 
 export interface Review {
+  username: string;
+  comment: string;
+  rating: number;
+  date: string;
+}
+
+// src/interfaces/product.interface.ts
+export interface SeedProduct {
+  titulo: string;
+  description: string;
+  shortDescription?: string;
+  available: boolean;
+  precio: number;
+  discountPrice?: number;
+  slug: string;
+  tags: string[];
+  seccion: string; // Usar string en lugar del enum aquí
+  tipo: string; // Usar string en lugar del enum aquí
+  isAvailableDuring?: { start: string; end: string };
+  customizationOptions?: {
+    extras: { name: string; price: number }[];
+    choices: { name: string; values: string[] }[];
+  };
+  images?: string[];
+  reviews?: {
     username: string;
     comment: string;
     rating: number;
     date: string;
+  }[];
 }

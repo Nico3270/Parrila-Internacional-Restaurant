@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,14 +8,15 @@ export default function HomePage() {
     <div className="w-full p-0 grid gap-0 grid-cols-1 md:grid-cols-3 grid-rows-3">
 
       {/* Cuadro Principal */}
-      <div className="relative md:col-span-2 row-span-2 h-[900px] shadow-lg">
+      <div className="relative md:col-span-2 row-span-2 h-[900px] ">
         <Link href="/products">
           <Image
             src="/imgs/nuestros_productos.webp" // Cambia la ruta según tu imagen
             alt="Nuestros Productos"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-none"
+            fill = {true}
+           
+            className="rounded-none object-cover"
+            
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
             <div className="text-center text-white p-4 bg-black bg-opacity-60">
@@ -30,9 +33,8 @@ export default function HomePage() {
           <Image
             src="/imgs/Bebidas.webp" // Cambia la ruta según tu imagen
             alt="Bebidas"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-none"
+            fill= {true}
+            className="rounded-none object-cover"
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
             <div className="text-center text-white p-4 bg-black bg-opacity-60">
@@ -49,9 +51,8 @@ export default function HomePage() {
           <Image
             src="/imgs/platos especiales.webp" // Cambia la ruta según tu imagen
             alt="Platos Especiales"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-none"
+            fill= {true}
+            className="rounded-none object-cover"
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
             <div className="text-center text-white p-4 bg-black bg-opacity-60">
@@ -68,9 +69,8 @@ export default function HomePage() {
           <Image
             src="/imgs/Contacto_redes.webp" // Cambia la ruta según tu imagen
             alt="Quiénes Somos / Contacto"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-none"
+            fill= {true}
+            className="rounded-none object-cover"
           />
           <div className="absolute inset-0 flex items-end justify-center bg-black bg-opacity-30">
             <div className="text-center text-white p-4 bg-black bg-opacity-60">
@@ -87,9 +87,8 @@ export default function HomePage() {
           <Image
             src="/imgs/Restaurante.webp" // Cambia la ruta según tu imagen
             alt="Galería de Fotos"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-none"
+            fill = {true}
+            className="rounded-none object-cover"
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
             <div className="text-center text-white p-4 bg-black bg-opacity-60">

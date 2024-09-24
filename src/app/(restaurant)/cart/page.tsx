@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import { CartProductCard } from "@/components"; // Importamos el componente CartProductCard
-import { initialData } from "@/interfaces/seed";
+
 import Link from "next/link";
 import clsx from "clsx"; // Importamos clsx para manejar clases condicionales
 import { redirect } from "next/navigation";
+import { initialData } from "@/seed/seed";
 
 // Datos iniciales del carrito
 const initialCartData = [
@@ -56,6 +57,8 @@ export default function CartPage() {
   if (initialCartData.length === 0){
     redirect("/empty")
   };
+   
+  
 
   // Función para actualizar el total de un producto específico
   const handleUpdateTotal = (slug: string, total: number) => {

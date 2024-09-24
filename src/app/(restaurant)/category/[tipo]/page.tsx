@@ -1,5 +1,6 @@
 import { ProductGrid } from "@/components";
-import { initialData } from "@/interfaces/seed";
+import { initialData } from "@/seed/seed";
+
 
 interface Props {
     params: {
