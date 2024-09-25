@@ -1,18 +1,26 @@
-"use client"
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import React from "react";
 import { FaShoppingCart, FaHeart, FaUser, FaSearch } from "react-icons/fa";
 import Image from "next/image";
-import {tituloLogo } from "@/config/fonts";
+import { tituloLogo } from "@/config/fonts";
 import { MenuSectionsBar, SideBar } from "@/components";
+import { useCartStore } from "@/store";
 
 export const TopMenu = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const totalItemsInCart = useCartStore((state) => state.getTotalItems());
+  const [loaded, setLoaded] = useState(false)
 
   const toggleDrawer = (open: boolean) => {
     setIsDrawerOpen(open);
   };
+
+  useEffect(() => {
+    setLoaded(true)
+  }, [])
+  
 
   return (
     <header className="bg-white text-gray-700 py-2 shadow-lg sticky top-0 z-50">
@@ -45,19 +53,34 @@ export const TopMenu = () => {
 
         {/* Enlaces de navegación */}
         <nav className="space-x-8 hidden md:flex">
-          <Link href="/products" className={`hover:text-red-700 ${tituloLogo.className}`}>
+          <Link
+            href="/products"
+            className={`hover:text-red-700 ${tituloLogo.className}`}
+          >
             Menú
           </Link>
-          <Link href="/services" className={`hover:text-red-700 ${tituloLogo.className}`}>
+          <Link
+            href="/services"
+            className={`hover:text-red-700 ${tituloLogo.className}`}
+          >
             Servicios
           </Link>
-          <Link href="/gallery" className={`hover:text-red-700 ${tituloLogo.className}`}>
+          <Link
+            href="/gallery"
+            className={`hover:text-red-700 ${tituloLogo.className}`}
+          >
             Galería
           </Link>
-          <Link href="/testimonials" className={`hover:text-red-700 ${tituloLogo.className}`}>
+          <Link
+            href="/testimonials"
+            className={`hover:text-red-700 ${tituloLogo.className}`}
+          >
             Testimonios
           </Link>
-          <Link href="/contact" className={`hover:text-red-700 ${tituloLogo.className}`}>
+          <Link
+            href="/contact"
+            className={`hover:text-red-700 ${tituloLogo.className}`}
+          >
             Contacto
           </Link>
         </nav>
@@ -76,14 +99,22 @@ export const TopMenu = () => {
         </div>
 
         {/* Iconos del carrito, favoritos y usuario */}
-        <div className="flex space-x-6 items-center"> 
-          <Link href="/cart" className="hover:text-gray-400">
+        <div className="flex space-x-6 items-center">
+          <Link href="/cart" className="relative hover:text-gray-400">
             <FaShoppingCart className="text-2xl" />
+            {(totalItemsInCart > 0 && loaded) && (
+              <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                {totalItemsInCart}
+              </span>
+            )}
           </Link>
           <Link href="/favorites" className="hover:text-gray-400">
             <FaHeart className="text-2xl" />
           </Link>
-          <button onClick={()=> toggleDrawer(true)} className="hover:text-gray-400">
+          <button
+            onClick={() => toggleDrawer(true)}
+            className="hover:text-gray-400"
+          >
             <FaUser className="text-2xl" />
           </button>
         </div>

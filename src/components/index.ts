@@ -1,7 +1,7 @@
 export  * from './ui/top-menu/TopMenu';
 export * from './cart/cart-poduct-mobile/CartProductMobile';
 export * from './cart/cart-product/CartProduct';
-export * from './cart/order-summary/OrderSummary';
+
 export * from './product/personalization/PersonalizationOptions'
 
 export * from './product/quantitySelector/QuantitySelector';
@@ -18,4 +18,7 @@ export * from './ui/pagination/Pagination';
 export * from './product/comentarios/CommentSection';
 export * from './product/add-product-cart/AddProductToCart';
 export * from './product/client-comment-section/ClientCommentSection';
-export * from './product/responsive-Slide/ResponsiveSlideShow'
+export * from './product/responsive-Slide/ResponsiveSlideShow';
+export * from './cart/products-in-cart/ProductsInCart';
+export * from './cart/order-summary/OrderSummary';
+export * from './cart/order-summary-with-actions/OrderSummaryWithActions';

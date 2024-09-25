@@ -1,28 +1,19 @@
 import React from "react";
+import { useCartStore } from "@/store";
 
-interface OrderSummaryProps {
-  subtotal: number;
-}
+export const OrderSummary: React.FC = () => {
+  const cartItems = useCartStore((state) => state.cart);
 
-export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal }) => {
+  const totalItems = cartItems.length;
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
   return (
-    <div className="w-full md:w-[100%] p-4 border rounded-lg shadow-md bg-white mt-4 md:mt-0 mx-auto">
-      <h3 className="text-lg font-bold mb-4">Order Summary</h3>
-      <div className="flex justify-between mb-2">
-        <span>Shipping</span>
-        <span>Free</span>
-      </div>
-      <div className="flex justify-between mb-2">
-        <span>Sales Tax</span>
-        <span>Calculated at checkout</span>
-      </div>
-      <div className="flex justify-between mb-4">
-        <span>Subtotal</span>
-        <span className="font-bold">${subtotal.toFixed(2)}</span>
-      </div>
-      <button className="w-full bg-red-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700">
-        Checkout
-      </button>
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Resumen de tu orden</h2>
+      <p className="mb-2">Cantidad de artículos: {totalItems}</p>
+      <p className="mb-2">Total a pagar: ${totalPrice.toFixed(2)}</p>
+
+      {/* Puedes agregar aquí más detalles sobre los adicionales si es necesario */}
     </div>
   );
 };

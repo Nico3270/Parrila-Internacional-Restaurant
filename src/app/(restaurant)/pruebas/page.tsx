@@ -3,6 +3,7 @@
 import React from "react";
 import { useCartStore } from "@/store";
 import Link from "next/link"; // Para agregar navegación si es necesario
+import Image from "next/image";
 
 export default function CartPage() {
   const { cart } = useCartStore(); // Accedemos al carrito desde el store
@@ -18,7 +19,7 @@ export default function CartPage() {
           {cart.map((product) => (
             <div key={product.cartItemId} className="p-4 border rounded-lg shadow-md">
               <h2 className="text-xl font-bold">{product.title}</h2>
-              <img src={product.image} alt={product.title} className="w-32 h-32 object-cover mb-2" />
+              <Image src={product.image} alt={product.title} className="w-32 h-32 object-cover mb-2" />
               <p>Cantidad: {product.quantity}</p>
               <p>Precio: ${product.price.toFixed(2)}</p>
               

@@ -2,106 +2,98 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { FaTrash } from "react-icons/fa";
-import { Product } from "@/interfaces";
-import { PersonalizationOptions, QuantitySelector } from "@/components";
+import { CartProduct } from "@/interfaces";
+import { useCartStore } from "@/store";
+import { PersonalizationOptions, RecommendationSection, QuantitySelector } from "@/components";
+import { FiTrash2 } from "react-icons/fi"; // Usamos el icono de React Icons
+import Link from "next/link";
 
 interface CartProductCardProps {
-  product: Product;
-  cantidad: number;
-  comentario?: string;
-  opcionesPersonalizacion?: { name: string; price: number }[];
-  onUpdateQuantity: (slug: string, newQuantity: number) => void;
-  onUpdateOptions: (slug: string, newOptions: { name: string; price: number }[]) => void;
-  onUpdateComment: (slug: string, newComment: string) => void;
-  onRemove: (slug: string) => void;
-  onUpdateTotal: (slug: string, total: number) => void; // Añadimos esta función para actualizar el total
+  product: CartProduct;
 }
 
-export const CartProductCard: React.FC<CartProductCardProps> = ({
-  product,
-  cantidad,
-  comentario,
-  opcionesPersonalizacion,
-  onUpdateQuantity,
-  onUpdateOptions,
-  onUpdateComment,
-  onRemove,
-  onUpdateTotal,
-}) => {
-  const [total, setTotal] = useState<number>(0);
+export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => {
+  const { updateProductQuantity, updateProductOptions, updateProductComment, removeProduct } = useCartStore();
+  const [total, setTotal] = useState<number>(product.price * product.quantity);
 
-  // Recalcula el total cuando cambian la cantidad o las opciones
   useEffect(() => {
-    const calcularTotal = () => {
-      const precioBase = product.precio * cantidad;
-      const precioAdiciones = opcionesPersonalizacion
-        ? opcionesPersonalizacion.reduce((total, opcion) => total + opcion.price, 0)
-        : 0;
-      const nuevoTotal = precioBase + precioAdiciones * cantidad;
-      setTotal(nuevoTotal);
-      onUpdateTotal(product.slug, nuevoTotal); // Actualizamos el total en el componente padre
-    };
+    const totalAdiciones = product.opcionesPersonalizacion.reduce((sum, option) => sum + option.price, 0);
+    const nuevoTotal = (product.price + totalAdiciones) * product.quantity;
+    setTotal(nuevoTotal);
+  }, [product.quantity, product.opcionesPersonalizacion, product.price]);
 
-    calcularTotal();
-  }, [cantidad, opcionesPersonalizacion, product.precio, product.slug, onUpdateTotal]);
+  const handleQuantityChange = (newQuantity: number) => {
+    updateProductQuantity(product.cartItemId, newQuantity);
+  };
+
+  const handleOptionsChange = (newOptions: { name: string; price: number }[]) => {
+    updateProductOptions(product.cartItemId, newOptions);
+  };
+
+  const handleCommentChange = (newComment: string) => {
+    updateProductComment(product.cartItemId, newComment);
+  };
+
+  const handleRemove = () => {
+    removeProduct(product.cartItemId);
+  };
 
   return (
-    <div className="flex flex-col items-center lg:flex-row lg:items-center justify-between border rounded-lg shadow-md p-4 mb-4 w-full lg:max-w-full">
-      {/* Imagen del producto */}
-      <div className="w-full lg:w-1/3 flex-shrink-0 relative mb-4 lg:mb-0 flex justify-center">
+    <div className="flex items-center p-4 border rounded-lg shadow-md bg-white relative">
+      {/* Imagen del producto centrada verticalmente */}
+      <div className="flex-shrink-0 h-48 flex items-center justify-center">
         <Image
-          src={`/imgs/${product.images[0]}`}
-          alt={product.titulo}
-          width={300}
-          height={300}
+          src={`/imgs/${product.image}`}
+          alt={product.title}
+          width={192}
+          height={192}
           className="rounded-lg object-cover"
         />
       </div>
 
       {/* Detalles del producto */}
-      <div className="w-full lg:w-2/3 lg:pl-6 flex flex-col justify-between">
-        {/* Título, precio y descripción */}
-        <div className="mb-2 w-full">
-          <h2 className="text-lg font-bold text-center lg:text-left">{product.titulo}</h2>
-          <p className="text-center lg:text-left text-gray-600">{product.description}</p>
-          <p className="text-center lg:text-left text-lg font-bold text-red-600 mt-2 lg:mt-0">
-            ${product.precio.toFixed(2)}
-          </p>
-        </div>
+      <div className="flex-grow ml-4">
+        {/* Título y botón de eliminar alineado a la derecha */}
+        <div className="flex justify-between items-start">
+          <Link href={`/product/${product.slug}`}>
+          <h2 className="text-xl font-semibold text-red-500">{product.title}</h2>
+          
+          </Link>
 
-        {/* Personalización */}
-        <div className="max-h-[120px] overflow-y-auto mb-4 w-full lg:w-auto">
-          <PersonalizationOptions
-            customizationOptions={product.customizationOptions}
-            selectedOptions={opcionesPersonalizacion}
-            comment={comentario}
-            onUpdateOptions={(newOptions) => onUpdateOptions(product.slug, newOptions)}
-            onUpdateComment={(newComment) => onUpdateComment(product.slug, newComment)}
-          />
-        </div>
-
-        {/* Cantidad seleccionada y eliminar */}
-        <div className="flex flex-col lg:flex-row items-center justify-between w-full">
-          {/* Cantidad */}
-          <QuantitySelector
-            inicio={cantidad}
-            onQuantityChange={(newQuantity) => onUpdateQuantity(product.slug, newQuantity)}
-          />
-
-          {/* Precio total */}
-          <div className="mt-2 lg:mt-0 lg:ml-4 text-lg font-bold text-red-600">
-            Total: ${total.toFixed(2)}
-          </div>
-
-          {/* Botón para eliminar */}
           <button
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center mt-4 lg:mt-0"
-            onClick={() => onRemove(product.slug)}
+            className="text-red-500 hover:text-red-700 transition-transform transform hover:scale-110"
+            onClick={handleRemove}
           >
-            <FaTrash className="mr-2" />
-            Eliminar
+            <FiTrash2 className="w-7 h-7" /> {/* Botón de eliminar más grande */}
           </button>
+        </div>
+
+        {/* Opciones de personalización */}
+        <div className="mt-2">
+          <PersonalizationOptions
+            customizationOptions={{ extras: product.opcionesDisponibles || [] }}
+            selectedOptions={product.opcionesPersonalizacion}
+            onUpdateOptions={handleOptionsChange}
+          />
+        </div>
+
+        {/* Recomendación / comentario */}
+        <div className="mt-2">
+          <RecommendationSection
+            comment={product.comentario || ""}
+            onUpdateComment={handleCommentChange}
+          />
+        </div>
+
+        {/* Precio y cantidad en la misma línea */}
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-gray-500">Total: ${total.toFixed(2)}</p>
+          <div className="flex items-center">
+            <QuantitySelector
+              inicio={product.quantity}
+              onQuantityChange={handleQuantityChange}
+            />
+          </div>
         </div>
       </div>
     </div>

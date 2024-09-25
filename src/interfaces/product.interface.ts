@@ -34,6 +34,7 @@ export interface CartProduct {
   quantity: number;
   image: string;
   opcionesPersonalizacion: { name: string; price: number }[];
+  opcionesDisponibles?: { name: string; price: number }[];  // Nueva propiedad opcional
   comentario?: string;
   cartItemId: string; // Identificador único del producto en el carrito
 }

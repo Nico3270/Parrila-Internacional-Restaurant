@@ -1,19 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
-import { FaShoppingCart, FaHeart, FaUser, FaBars, FaSearch, FaUtensils } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import {
+  FaShoppingCart,
+  FaHeart,
+  FaUser,
+  FaBars,
+  FaSearch,
+  FaUtensils,
+} from "react-icons/fa";
 import Image from "next/image";
 import { tituloLogo } from "@/config/fonts";
 import { MenuSectionsBar, SideBar } from "@/components";
+import { useCartStore } from "@/store";
 
 export const TopMenuMobile = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const totalItemsInCart = useCartStore((state) => state.getTotalItems());
+  const [loaded, setLoaded] = useState(false);
 
   const toggleDrawer = (open: boolean) => {
     setIsDrawerOpen(open);
   };
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
 
   return (
     <div>
@@ -32,10 +46,14 @@ export const TopMenuMobile = () => {
             </Link>
             <div className="ml-2 text-left">
               <Link href="/">
-                <span className={`block text-md font-bold leading-tight ${tituloLogo.className}`}>
+                <span
+                  className={`block text-md font-bold leading-tight ${tituloLogo.className}`}
+                >
                   Parrilla
                 </span>
-                <span className={`block text-md font-bold leading-tight ${tituloLogo.className}`}>
+                <span
+                  className={`block text-md font-bold leading-tight ${tituloLogo.className}`}
+                >
                   Internacional
                 </span>
               </Link>
@@ -52,11 +70,21 @@ export const TopMenuMobile = () => {
         {menuOpen && (
           <div className="absolute top-12 left-0 w-full bg-white shadow-lg z-20 py-4">
             <nav className="space-y-4 flex flex-col items-center">
-              <Link href="/products" className="hover:text-red-700">Menú</Link>
-              <Link href="/services" className="hover:text-red-700">Servicios</Link>
-              <Link href="/gallery" className="hover:text-red-700">Galería</Link>
-              <Link href="/testimonials" className="hover:text-red-700">Testimonios</Link>
-              <Link href="/contact" className="hover:text-red-700">Contacto</Link>
+              <Link href="/products" className="hover:text-red-700">
+                Menú
+              </Link>
+              <Link href="/services" className="hover:text-red-700">
+                Servicios
+              </Link>
+              <Link href="/gallery" className="hover:text-red-700">
+                Galería
+              </Link>
+              <Link href="/testimonials" className="hover:text-red-700">
+                Testimonios
+              </Link>
+              <Link href="/contact" className="hover:text-red-700">
+                Contacto
+              </Link>
             </nav>
           </div>
         )}
@@ -82,11 +110,23 @@ export const TopMenuMobile = () => {
             <FaHeart className="text-xl" />
             <span className="text-xs">Favoritos</span>
           </Link>
-          <Link href="/cart" className="flex flex-col items-center">
+          <Link
+            href="/cart"
+            className="relative flex flex-col items-center hover:text-gray-400"
+          >
             <FaShoppingCart className="text-xl" />
+            {totalItemsInCart > 0 && loaded && (
+              <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                {totalItemsInCart}
+              </span>
+            )}
             <span className="text-xs">Carrito</span>
           </Link>
-          <button onClick={()=> toggleDrawer(true)} className="flex flex-col items-center">
+
+          <button
+            onClick={() => toggleDrawer(true)}
+            className="flex flex-col items-center"
+          >
             <FaUser className="text-xl" />
             <span className="text-xs">Perfil</span>
           </button>

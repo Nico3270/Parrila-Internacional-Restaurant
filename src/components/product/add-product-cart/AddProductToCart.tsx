@@ -15,17 +15,20 @@ interface AddToCartProps {
 }
 
 export const AddToCart: React.FC<AddToCartProps> = ({ product }) => {
-  const { addProductToCart } = useCartStore();
+  const addProductToCart = useCartStore(state => state.addProductToCart);
+  
   const [selectedOptions, setSelectedOptions] = useState<
     { name: string; price: number }[]
   >([]);
   const [comment, setComment] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para manejar el modal
-
+  
+  
   const AddProductToCartPrueba = () => {
+    
     const productToAdd: CartProduct = {
-      cartItemId: uuidv4(), // Generar un identificador único
+      cartItemId: uuidv4(),
       id: product.id,
       slug: product.slug,
       title: product.titulo,
@@ -35,17 +38,15 @@ export const AddToCart: React.FC<AddToCartProps> = ({ product }) => {
       opcionesPersonalizacion: selectedOptions,
       comentario: comment,
     };
-    console.log("Funciona");
-    console.log({productToAdd});
-    addProductToCart(productToAdd);
-    setIsModalOpen(true); // Mostrar el modal
+  
+    addProductToCart(productToAdd); // Esta línea no necesita ser asincrónica
 
-    // Restablecer los estados
+  
+    setIsModalOpen(true);
     setQuantity(1);
     setComment("");
-    setSelectedOptions([]); // Esto también restablece los checks
-
-    // Cerrar el modal automáticamente después de 3 segundos
+    setSelectedOptions([]);
+  
     setTimeout(() => {
       setIsModalOpen(false);
     }, 3000);
@@ -97,10 +98,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({ product }) => {
       {/* Mostrar el botón para agregar al carrito y favorito */}
       <div className="flex items-center gap-4 mt-4">
         <button
-          onClick={(e) => {
-            e.preventDefault(); // Asegurarte de que el evento no se bloquea.
-            AddProductToCartPrueba();
-          }}
+          onClick={AddProductToCartPrueba}
           className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center"
         >
           Agregar al Carrito

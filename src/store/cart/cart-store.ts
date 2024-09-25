@@ -1,61 +1,59 @@
-import { CartProduct } from "@/interfaces";
 import { create } from "zustand";
+import { persist, PersistOptions } from "zustand/middleware";
+import { CartProduct } from "@/interfaces";
 
 interface State {
   cart: CartProduct[];
-
-  // Función para agregar producto al carrito
   addProductToCart: (product: CartProduct) => void;
-
-  // Función para actualizar la cantidad de un producto
-  updateProductQuantity: (id: string, quantity: number) => void;
-
-  // Función para eliminar un producto del carrito
+  getTotalItems: () => number;
   removeProduct: (id: string) => void;
+  updateProductQuantity: (id: string, quantity: number) => void;
+  updateProductOptions: (id: string, newOptions: { name: string; price: number }[]) => void;
+  updateProductComment: (id: string, newComment: string) => void;
 }
 
-export const useCartStore = create<State>((set) => ({
-    cart: [],
-  
-    // Método para agregar un producto al carrito
-    addProductToCart: (product: CartProduct) =>
-      set((state) => ({
-        cart: [...state.cart, product],
-      })),
-  
-    // Método para actualizar la cantidad de un producto en el carrito
-    updateProductQuantity: (cartItemId: string, quantity: number) =>
-      set((state) => ({
-        cart: state.cart.map((item) =>
-          item.cartItemId === cartItemId ? { ...item, quantity } : item
-        ),
-      })),
-  
-    // Método para eliminar un producto del carrito
-    removeProduct: (cartItemId: string) =>
-      set((state) => ({
-        cart: state.cart.filter((item) => item.cartItemId !== cartItemId),
-      })),
-  
-    // Método para actualizar comentario y opciones de personalización
-    updateProductDetails: (
-      cartItemId: string,
-      comentario?: string,
-      opcionesPersonalizacion?: { name: string; price: number }[]
-    ) =>
-      set((state) => ({
-        cart: state.cart.map((item) =>
-          item.cartItemId === cartItemId
-            ? {
-                ...item,
-                comentario: comentario !== undefined ? comentario : item.comentario,
-                opcionesPersonalizacion:
-                  opcionesPersonalizacion !== undefined
-                    ? opcionesPersonalizacion
-                    : item.opcionesPersonalizacion,
-              }
-            : item
-        ),
-      })),
-  }));
-  
+export const useCartStore = create<State>()(
+  persist(
+    (set, get) => ({
+      cart: [],
+      addProductToCart: (product: CartProduct) => {
+        const { cart } = get();
+        console.log(cart);
+        set((state) => ({ cart: [...state.cart, product] }));
+      },
+      getTotalItems: () => {
+        const { cart } = get();
+        return cart.reduce((total, item) => total + item.quantity, 0);
+      },
+      updateProductQuantity: (cartItemId: string, quantity: number) =>
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item.cartItemId === cartItemId ? { ...item, quantity } : item
+          ),
+        })),
+      updateProductOptions: (cartItemId: string, newOptions: { name: string; price: number }[]) =>
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item.cartItemId === cartItemId
+              ? { ...item, opcionesPersonalizacion: newOptions }
+              : item
+          ),
+        })),
+      updateProductComment: (cartItemId: string, newComment: string) =>
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item.cartItemId === cartItemId
+              ? { ...item, comentario: newComment }
+              : item
+          ),
+        })),
+      removeProduct: (cartItemId: string) =>
+        set((state) => ({
+          cart: state.cart.filter((item) => item.cartItemId !== cartItemId),
+        })),
+    }),
+    {
+      name: "shopping-cart",
+    } as PersistOptions<State>
+  )
+);
