@@ -5,6 +5,7 @@ import {
   QuantitySelector,
   RecommendationSection,
   PersonalizationOptions,
+  AddFavorites,
 } from "@/components";
 import { CartProduct, Product } from "@/interfaces";
 import { useCartStore } from "@/store";
@@ -103,12 +104,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({ product }) => {
         >
           Agregar al Carrito
         </button>
-        <button
-          onClick={() => console.log("PRobando")}
-          className="bg-gray-100 p-2 rounded-full hover:bg-red-200"
-        >
-          ❤️
-        </button>
+        <AddFavorites id={product.id} title = {product.titulo} price={product.precio} description={product.description} slug={product.slug} images={product.images}/>
       </div>
 
       {/* Modal para mostrar la confirmación */}

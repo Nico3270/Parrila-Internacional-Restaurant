@@ -4,9 +4,11 @@ import {
   ProductGridProduct,
   ResponsiveSlideShow,
   AddToCart,  // Importamos AddToCart
-  ClientCommentSection  // Importamos el componente de comentarios
+  ClientCommentSection,  // Importamos el componente de comentarios
+  Precio
 } from "@/components";
 import type { Metadata } from 'next'
+
 
 interface Props {
   params: {
@@ -80,9 +82,7 @@ export default async function ProductPage({ params }: Props) {
           <div>
             <h1 className="text-3xl font-bold">{product.titulo}</h1>
             <h2 className="text-xl">{product.description}</h2>
-            <p className="text-2xl font-bold text-red-600 mt-2">
-              ${product.precio.toFixed(2)}
-            </p>
+            <Precio value={product.precio} />
           </div>
 
           {/* Renderizamos el componente AddToCart */}

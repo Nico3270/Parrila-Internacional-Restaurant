@@ -10,6 +10,7 @@ interface State {
   updateProductQuantity: (id: string, quantity: number) => void;
   updateProductOptions: (id: string, newOptions: { name: string; price: number }[]) => void;
   updateProductComment: (id: string, newComment: string) => void;
+  getTotalPrice: () => number; // Nueva función para obtener el precio total del carrito
 }
 
 export const useCartStore = create<State>()(
@@ -17,8 +18,6 @@ export const useCartStore = create<State>()(
     (set, get) => ({
       cart: [],
       addProductToCart: (product: CartProduct) => {
-        const { cart } = get();
-        console.log(cart);
         set((state) => ({ cart: [...state.cart, product] }));
       },
       getTotalItems: () => {
@@ -51,6 +50,17 @@ export const useCartStore = create<State>()(
         set((state) => ({
           cart: state.cart.filter((item) => item.cartItemId !== cartItemId),
         })),
+      // Nueva función para calcular el precio total del carrito
+      getTotalPrice: () => {
+        const { cart } = get();
+        return cart.reduce((total, item) => {
+          const totalAdiciones = item.opcionesPersonalizacion.reduce(
+            (sum, option) => sum + option.price,
+            0
+          );
+          return total + (item.price + totalAdiciones) * item.quantity;
+        }, 0);
+      },
     }),
     {
       name: "shopping-cart",

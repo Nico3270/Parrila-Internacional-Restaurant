@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 interface CustomizationOptionsProps {
   customizationOptions: {
@@ -22,6 +22,18 @@ export const PersonalizationOptions: React.FC<CustomizationOptionsProps> = ({
 
     onUpdateOptions(newOptions); // Actualizamos las opciones directamente
   };
+
+  // Efecto para sincronizar las opciones seleccionadas con las opciones disponibles
+  useEffect(() => {
+    if (customizationOptions?.extras.length) {
+      const validSelectedOptions = selectedOptions.filter((selected) =>
+        customizationOptions.extras.some((extra) => extra.name === selected.name)
+      );
+      if (validSelectedOptions.length !== selectedOptions.length) {
+        onUpdateOptions(validSelectedOptions); // Elimina opciones seleccionadas no válidas
+      }
+    }
+  }, [customizationOptions, selectedOptions, onUpdateOptions]);
 
   return (
     <div className="mt-4">

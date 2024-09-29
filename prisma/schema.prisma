@@ -19,6 +19,27 @@ model Type {
   products Product[]
 }
 
+enum Role {
+  admin
+  user
+  server
+  kitchen
+  delivery
+}
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  emailVerified DateTime?
+  password String
+  role Role @default(user)
+  image String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+
 model Product {
   id              String @id @default(uuid())
   titulo          String

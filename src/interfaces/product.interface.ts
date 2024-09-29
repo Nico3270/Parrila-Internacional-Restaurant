@@ -26,6 +26,15 @@ export interface Product {
   };
 }
 
+export interface SeedUser {
+  email: string;
+  password: string;
+  name: string;
+  role: "admin" | "user" | "server" | "kitchen" | "delivery"
+
+}
+
+
 export interface CartProduct {
   id: string;
   slug: string;
@@ -37,6 +46,15 @@ export interface CartProduct {
   opcionesDisponibles?: { name: string; price: number }[];  // Nueva propiedad opcional
   comentario?: string;
   cartItemId: string; // Identificador único del producto en el carrito
+}
+
+export interface FavoriteProduct {
+  id: string;
+  slug: string;
+  title: string;
+  price: number;
+  description: string;
+  images: string[];
 }
 
 export enum SeccionEnum {

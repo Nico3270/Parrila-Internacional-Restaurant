@@ -1,5 +1,6 @@
 
-import {  SeccionEnum, TipoEnum, SeedProduct } from "../interfaces/product.interface";
+import {  SeccionEnum, TipoEnum, SeedProduct, SeedUser } from "../interfaces/product.interface";
+import bcryptjs from "bcryptjs";
 
 
 // type ValydSections = "Platos fuertes" | "Entradas" | "Hamburguesas" | "Perros calientes" | "Cervezas" | "Bebidas calientes" | "Cocteles" | "Pizza";
@@ -9,9 +10,39 @@ export interface SeedData {
   products: SeedProduct[];
   sections: string[];
   types: string[];
+  users: SeedUser[];
 }
 
 export const initialData: SeedData = {
+  users: [
+    {email:"Nicolas1@gmail.com",
+      name: "Nicolas 1",
+      password: bcryptjs.hashSync("123456"),
+      role: "admin"
+    },
+    {email:"Nicolas2@gmail.com",
+      name: "Nicolas 2",
+      password: bcryptjs.hashSync("123456"),
+      role: "user"
+    },
+    {email:"Nicolas3@gmail.com",
+      name: "Nicolas 3",
+      password: bcryptjs.hashSync("123456"),
+      role: "server"
+    },
+    {email:"Nicolas4@gmail.com",
+      name: "Nicolas 4",
+      password: bcryptjs.hashSync("123456"),
+      role: "kitchen"
+    },
+    {email:"Nicolas5@gmail.com",
+      name: "Nicolas 5",
+      password: bcryptjs.hashSync("123456"),
+      role: "kitchen"
+    },
+
+  ],
+
   sections: [SeccionEnum.PLATOS_FUERTES, SeccionEnum.ENTRADAS, SeccionEnum.HAMBURGUESAS, 
     SeccionEnum.PERROS_CALIENTES, SeccionEnum.CERVEZAS, SeccionEnum.BEBIDAS_CALIENTES, SeccionEnum.COCTELES, SeccionEnum.PIZZA],
   types: [TipoEnum.COMIDA, TipoEnum.ENTRADAS, TipoEnum.BEBIDAS, TipoEnum.POSTRES],
@@ -942,3 +973,6 @@ export const initialData: SeedData = {
     },
   ],
 };
+
+
+

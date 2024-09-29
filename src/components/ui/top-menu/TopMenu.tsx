@@ -6,11 +6,12 @@ import { FaShoppingCart, FaHeart, FaUser, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import { tituloLogo } from "@/config/fonts";
 import { MenuSectionsBar, SideBar } from "@/components";
-import { useCartStore } from "@/store";
+import { useCartStore, useFavoritesStore } from "@/store";
 
 export const TopMenu = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const totalItemsInCart = useCartStore((state) => state.getTotalItems());
+  const totalFavorites = useFavoritesStore((state) => state.getTotalItems());
   const [loaded, setLoaded] = useState(false)
 
   const toggleDrawer = (open: boolean) => {
@@ -100,7 +101,10 @@ export const TopMenu = () => {
 
         {/* Iconos del carrito, favoritos y usuario */}
         <div className="flex space-x-6 items-center">
-          <Link href="/cart" className="relative hover:text-gray-400">
+          <Link href={(totalItemsInCart === 0)
+             ? "/empty"
+             : "/cart"} 
+             className="relative hover:text-gray-400">
             <FaShoppingCart className="text-2xl" />
             {(totalItemsInCart > 0 && loaded) && (
               <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
@@ -108,8 +112,13 @@ export const TopMenu = () => {
               </span>
             )}
           </Link>
-          <Link href="/favorites" className="hover:text-gray-400">
+          <Link href="/favorites" className="relative hover:text-gray-400">
             <FaHeart className="text-2xl" />
+            {(totalFavorites > 0 && loaded) && (
+              <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                {totalFavorites}
+              </span>
+            )}
           </Link>
           <button
             onClick={() => toggleDrawer(true)}

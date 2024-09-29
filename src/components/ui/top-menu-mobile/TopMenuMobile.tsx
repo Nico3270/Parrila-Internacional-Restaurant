@@ -13,12 +13,13 @@ import {
 import Image from "next/image";
 import { tituloLogo } from "@/config/fonts";
 import { MenuSectionsBar, SideBar } from "@/components";
-import { useCartStore } from "@/store";
+import { useCartStore, useFavoritesStore } from "@/store";
 
 export const TopMenuMobile = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const totalItemsInCart = useCartStore((state) => state.getTotalItems());
+  const totalFavorites = useFavoritesStore((state) => state.getTotalItems());
   const [loaded, setLoaded] = useState(false);
 
   const toggleDrawer = (open: boolean) => {
@@ -106,10 +107,20 @@ export const TopMenuMobile = () => {
             <FaSearch className="text-xl" />
             <span className="text-xs">Buscar</span>
           </Link>
-          <Link href="/favorites" className="flex flex-col items-center">
+          {/* Botón de favoritos */}
+          <Link
+            href="/favorites"
+            className="relative flex flex-col items-center hover:text-gray-400"
+          >
             <FaHeart className="text-xl" />
+            {totalFavorites > 0 && loaded && (
+              <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center transform translate-x-1/4 -translate-y-1/2">
+                {totalFavorites}
+              </span>
+            )}
             <span className="text-xs">Favoritos</span>
           </Link>
+
           <Link
             href="/cart"
             className="relative flex flex-col items-center hover:text-gray-400"

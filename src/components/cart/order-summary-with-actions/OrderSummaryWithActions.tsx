@@ -1,69 +1,84 @@
-"use client"; // Esto convierte al componente en un cliente
+"use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link"; // Usamos Link de Next.js para la redirección
 import clsx from "clsx";
-import { OrderSummary } from "../order-summary/OrderSummary";
+import { useCartStore } from "@/store";
+import { Precio } from "@/components/ui/precio/Precio";
 
+export const OrderSummaryWithActions = () => {
+  const totalItems = useCartStore((state) => state.getTotalItems());
+  const totalPrice = useCartStore((state) => state.getTotalPrice());
+  const [isMounted, setIsMounted] = useState(false);
+  const [deliveryOption, setDeliveryOption] = useState<string | null>(null); // Estado para la opción seleccionada
 
-export const OrderSummaryWithActions: React.FC = () => {
-  const [deliveryOption, setDeliveryOption] = useState<string | null>(null);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  const handleOptionChange = (option: string) => {
-    setDeliveryOption(option);
+  // Maneja el cambio de la opción seleccionada
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDeliveryOption(event.target.value);
   };
 
-  const handleContinue = () => {
-    if (deliveryOption === "restaurant") {
-      window.location.href = "/checkout";
-    } else if (deliveryOption === "domicilio") {
-      window.location.href = "/checkout/address";
-    }
-  };
+  // Si el componente no está montado, no mostramos nada para evitar errores de hidratación
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div>
-      <OrderSummary />
+      <h2 className="text-xl font-bold mb-4">Resumen de tu orden</h2>
+      <p>Cantidad de artículos: {totalItems}</p>
+      <p>Total a pagar: {<Precio value={totalPrice}/>}</p>
 
-      {/* Checkboxes */}
       <div className="mt-4">
-        <label className="block mb-2 font-semibold">¿Cómo prefieres recibir tu comida?</label>
-        <div className="space-y-2">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="deliveryOption"
-              value="restaurant"
-              onChange={() => handleOptionChange("restaurant")}
-              checked={deliveryOption === "restaurant"}
-              className="mr-2"
-            />
-            Comer en restaurante
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="deliveryOption"
-              value="domicilio"
-              onChange={() => handleOptionChange("domicilio")}
-              checked={deliveryOption === "domicilio"}
-              className="mr-2"
-            />
-            Pedir a domicilio
-          </label>
+        <h3 className="text-lg font-semibold mb-2">¿Cómo prefieres recibir tu comida?</h3>
+        
+        <div className="flex items-center mb-2">
+          <input
+            type="radio"
+            name="deliveryOption"
+            value="restaurante"
+            checked={deliveryOption === "restaurante"}
+            onChange={handleOptionChange}
+            className="mr-2"  // Añadimos margen a la derecha
+          />
+          <label>Comer en restaurante</label>
+        </div>
+
+        <div className="flex items-center mb-2">
+          <input
+            type="radio"
+            name="deliveryOption"
+            value="domicilio"
+            checked={deliveryOption === "domicilio"}
+            onChange={handleOptionChange}
+            className="mr-2"  // Añadimos margen a la derecha
+          />
+          <label>Pedir a domicilio</label>
         </div>
       </div>
 
-      {/* Botón continuar */}
-      <button
+      {/* Botón de continuar */}
+      <Link
+        href={
+          deliveryOption === "restaurante"
+            ? "/checkout"
+            : deliveryOption === "domicilio"
+            ? "/checkout/address"
+            : "#"
+        }
         className={clsx(
-          "mt-6 w-full py-2 px-4 bg-blue-500 text-white rounded-lg",
-          deliveryOption ? "hover:bg-blue-600 cursor-pointer" : "bg-gray-300 cursor-not-allowed"
+          "mt-4 block text-center px-4 py-2 rounded-lg",
+          deliveryOption
+            ? "bg-red-500 text-white hover:bg-red-600"
+            : "bg-gray-400 text-white cursor-not-allowed"
         )}
-        onClick={handleContinue}
-        disabled={!deliveryOption}
+        prefetch={false} // Deshabilita el prefetch para evitar redirección anticipada
       >
         Continuar con la orden
-      </button>
+      </Link>
     </div>
   );
 };

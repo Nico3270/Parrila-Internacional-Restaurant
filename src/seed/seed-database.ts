@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   if (process.env.NODE_ENV !== "production") {
+    await prisma.user.deleteMany();
     await prisma.customizationOptionsExtras.deleteMany();
     await prisma.extra.deleteMany();
     await prisma.choice.deleteMany();
@@ -16,6 +17,12 @@ async function main() {
     await prisma.type.deleteMany();
     await prisma.section.deleteMany();
   }
+
+  // Insertar usuarios
+
+  await prisma.user.createMany({
+    data: initialData.users
+  });
 
   // Crear secciones
   const sectionsMap: { [key: string]: { id: string } } = {};

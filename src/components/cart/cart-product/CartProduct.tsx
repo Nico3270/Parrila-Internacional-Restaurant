@@ -5,7 +5,7 @@ import Image from "next/image";
 import { CartProduct } from "@/interfaces";
 import { useCartStore } from "@/store";
 import { PersonalizationOptions, RecommendationSection, QuantitySelector } from "@/components";
-import { FiTrash2 } from "react-icons/fi"; // Usamos el icono de React Icons
+import { FiTrash2 } from "react-icons/fi";
 import Link from "next/link";
 
 interface CartProductCardProps {
@@ -39,9 +39,9 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
   };
 
   return (
-    <div className="flex items-center p-4 border rounded-lg shadow-md bg-white relative">
+    <div className="flex flex-col md:flex-row items-start p-4 border rounded-lg shadow-md bg-white relative max-w-full md:max-w-[600px]">
       {/* Imagen del producto centrada verticalmente */}
-      <div className="flex-shrink-0 h-48 flex items-center justify-center">
+      <div className="flex-shrink-0 w-full md:w-48 h-48 flex items-center justify-center">
         <Image
           src={`/imgs/${product.image}`}
           alt={product.title}
@@ -52,29 +52,30 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
       </div>
 
       {/* Detalles del producto */}
-      <div className="flex-grow ml-4">
+      <div className="flex-grow ml-0 md:ml-4 w-full">
         {/* Título y botón de eliminar alineado a la derecha */}
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-start w-full">
           <Link href={`/product/${product.slug}`}>
-          <h2 className="text-xl font-semibold text-red-500">{product.title}</h2>
-          
+            <h2 className="text-xl font-semibold text-red-500">{product.title}</h2>
           </Link>
 
           <button
             className="text-red-500 hover:text-red-700 transition-transform transform hover:scale-110"
             onClick={handleRemove}
           >
-            <FiTrash2 className="w-7 h-7" /> {/* Botón de eliminar más grande */}
+            <FiTrash2 className="w-7 h-7" />
           </button>
         </div>
 
-        {/* Opciones de personalización */}
+        {/* Opciones de personalización con scroll */}
         <div className="mt-2">
-          <PersonalizationOptions
-            customizationOptions={{ extras: product.opcionesDisponibles || [] }}
-            selectedOptions={product.opcionesPersonalizacion}
-            onUpdateOptions={handleOptionsChange}
-          />
+          <div className="max-h-24 overflow-y-auto">
+            <PersonalizationOptions
+              customizationOptions={{ extras: product.opcionesDisponibles || [] }}
+              selectedOptions={product.opcionesPersonalizacion}
+              onUpdateOptions={handleOptionsChange}
+            />
+          </div>
         </div>
 
         {/* Recomendación / comentario */}

@@ -1,51 +1,40 @@
+// src/components/ProductsInCart.tsx
+
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { CartProductCard } from "@/components";
 import { useCartStore } from "@/store";
-import { CartProduct } from "@/interfaces";
-import { getProductById } from "@/actions";
 
 
 
-export const ProductsInCart: React.FC = () => {
-  const cartItems = useCartStore((state) => state.cart);  // Productos del estado global
-  const [formattedCartItems, setFormattedCartItems] = useState<CartProduct[]>([]);  // Productos con los datos completos
 
-  console.log({formattedCartItems});
+interface ProductsInCartProps {
+  productsPersonalization: { id: string; opcionesDisponibles: { name: string; price: number }[] }[];
+}
 
-  useEffect(() => {
-    const fetchProductData = async () => {
-      const updatedCartItems = await Promise.all(
-        cartItems.map(async (item) => {
-          const productFromDb = await getProductById(item.id);  // Llamada directa a la server action
+export const ProductsInCart: React.FC<ProductsInCartProps> = ({ productsPersonalization }) => {
+  const cartItems = useCartStore((state) => state.cart); // Obtenemos el carrito del estado del cliente (Zustand)
 
-          // Si el producto existe, formateamos los datos
-          if (productFromDb) {
-            return {
-              ...item,
-              opcionesDisponibles: productFromDb.customizationOptions?.extras.map(extraRelation => ({
-                name: extraRelation.extra.name,
-                price: extraRelation.extra.price
-              })) || [],
-            };
-          }
 
-          return item;
-        })
-      );
+  // Iteramos sobre los productos del carrito y comparamos con los del array productsPersonalization
+  const formattedCartItems = cartItems.map((cartItem) => {
+    // Buscamos las opciones de personalización para este producto en el array productsPersonalization
+    const productPersonalization = productsPersonalization.find(
+      (product) => product.id === cartItem.id
+    );
 
-      setFormattedCartItems(updatedCartItems);  // Actualizamos el estado con los productos formateados
+    return {
+      ...cartItem,  // Mantenemos las propiedades del carrito
+      opcionesDisponibles: productPersonalization?.opcionesDisponibles || [],  // Asignamos las opciones disponibles si existen
     };
-
-    fetchProductData();
-  }, [cartItems]);
+  });
 
   return (
-    <div className="grid grid-cols-1 gap-6"> {/* Usamos solo una columna */}
-    {formattedCartItems.map((item, index) => (
-      <CartProductCard key={index} product={item} />
-    ))}
-  </div>
+    <div className="grid grid-cols-1 gap-6">
+      {formattedCartItems.map((item, index) => (
+        <CartProductCard key={index} product={item} />
+      ))}
+    </div>
   );
 };
