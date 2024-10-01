@@ -5,7 +5,9 @@ import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import clsx from "clsx";
-import { registerUser, login } from "@/actions";
+import {  login } from "@/actions";
+import { signIn } from "next-auth/react"; // Importar signIn de NextAuth
+import { registerUser } from "@/actions/auth/register";
 
 type FormInputs = {
   name: string;
@@ -14,31 +16,42 @@ type FormInputs = {
 };
 
 export const RegisterForm = () => {
-    
-    const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
     handleSubmit,
-    
     formState: { errors },
   } = useForm<FormInputs>();
-  
+
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     setErrorMessage("");
     const { name, email, password } = data;
-    // Aquí se enviarán los datos al servidor
-    const response = await registerUser(name, email, password );
-    if (!response.ok){
-        setErrorMessage(response.message)
-        return
-    };
 
+    // Registrar usuario con nombre, email y contraseña
+    const response = await registerUser(name, email, password);
+    if (!response.ok) {
+      setErrorMessage(response.message);
+      return;
+    }
+
+    // Iniciar sesión con credenciales después del registro exitoso
     await login(email.toLowerCase(), password);
-    window.location.replace("/products")
+    window.location.replace("/products");
   };
 
-  const handleGoogleRegister = () => {
-    // Aquí se manejará la autenticación con Google
+  // Iniciar sesión con Google (en lugar de registro separado)
+  const handleGoogleRegister = async () => {
+    try {
+      // Autenticación con Google usando NextAuth
+      const response = await signIn("google", { redirect: true });
+
+      if (response?.error) {
+        // Si hay un error, mostrar mensaje
+        setErrorMessage("No se pudo completar el inicio de sesión con Google");
+      }
+    } catch (error) {
+      setErrorMessage("No se pudo completar el inicio de sesión con Google");
+    }
   };
 
   return (
@@ -106,7 +119,7 @@ export const RegisterForm = () => {
                 required: "La contraseña es requerida",
                 minLength: {
                   value: 6,
-                  message: "La contraseña debe tener al menos 8 caracteres",
+                  message: "La contraseña debe tener al menos 6 caracteres",
                 },
               })}
               className={clsx(
@@ -122,10 +135,11 @@ export const RegisterForm = () => {
               </span>
             )}
           </div>
-            {
-                (errorMessage !== "") && (<span className= "text-red-500">{errorMessage}</span>)
-            }
-            
+
+          {errorMessage !== "" && (
+            <span className="text-red-500">{errorMessage}</span>
+          )}
+
           <button
             type="submit"
             className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
@@ -140,12 +154,13 @@ export const RegisterForm = () => {
           <div className="border-t w-full border-gray-300"></div>
         </div>
 
+        {/* Botón para iniciar sesión con Google */}
         <button
           onClick={handleGoogleRegister}
           className="w-full flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg mt-4 hover:bg-blue-700 transition"
         >
           <FaGoogle className="mr-2" />
-          Regístrate con Google
+          Iniciar con Google
         </button>
 
         <div className="text-center mt-4">

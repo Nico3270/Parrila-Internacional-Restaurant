@@ -1,44 +1,42 @@
 "use client";
 
 import { useFormState, useFormStatus } from 'react-dom';
-import { authenticate } from '@/actions'; // Supongo que tienes una acción de autenticación
 import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { IoInformationOutline } from 'react-icons/io5';
 import clsx from 'clsx';
 import { useEffect } from 'react';
+import { signIn } from 'next-auth/react';
+import { authenticate } from '@/actions';
+
 // import { useRouter } from 'next/navigation';
 
-
 export const LoginForm = () => {
-  // `useFormState` maneja el estado del formulario, como la autenticación
   const [state, dispatch] = useFormState(authenticate, undefined);
-  // const router = useRouter();
+
   useEffect(() => {
-    if(state === "Success"){
-      // router.replace('/')
-      window.location.replace("/")
-
+    if (state === "Success") {
+      window.location.replace("/");
     }
-  },[state])
+  }, [state]);
 
-
-  const handleGoogleLogin = () => {
-    // Aquí se manejará la autenticación con Google
+  const handleGoogleLogin = async () => {
+    // Llamar a la función signIn para Google
+    await signIn("google", { redirect: true });
   };
 
   return (
     <div className="md:w-1/2 bg-white flex flex-col justify-center p-8">
       <div className="max-w-md w-full mx-auto">
         <h1 className="text-4xl font-bold mb-4 text-center">Iniciar Sesión</h1>
-        <form action={dispatch} className="space-y-4"> {/* Mantenemos `dispatch` en el action */}
+        <form action={dispatch} className="space-y-4">
           <div>
             <label htmlFor="email" className="block font-bold">
               Correo Electrónico
             </label>
             <input
               type="email"
-              name="email" // Cambiamos a `name` en lugar de `id` para que el FormData pueda leer correctamente los valores
+              name="email"
               className="w-full border rounded-lg p-2 mt-2 focus:outline-none focus:ring-2 focus:ring-red-600"
               placeholder="Ingresa tu correo"
               required
@@ -50,7 +48,7 @@ export const LoginForm = () => {
             </label>
             <input
               type="password"
-              name="password" // Cambiamos a `name` en lugar de `id` por la misma razón
+              name="password"
               className="w-full border rounded-lg p-2 mt-2 focus:outline-none focus:ring-2 focus:ring-red-600"
               placeholder="Ingresa tu contraseña"
               required
@@ -67,22 +65,18 @@ export const LoginForm = () => {
           </div>
 
           <div
-          className='flex h-8 items-end space-x-1'
-          aria-live='polite'
-          aria-atomic="true">
-            { state === "CredentialsSignin" && (
-              <>
+            className='flex h-8 items-end space-x-1'
+            aria-live='polite'
+            aria-atomic="true">
+            {state === "CredentialsSignin" && (
               <div className="flex flex-row mb-2">
-                <IoInformationOutline className="h-5 w-5 text-red-500"  />
+                <IoInformationOutline className="h-5 w-5 text-red-500" />
                 <p className='text-sm text-red-500'>La información no es correcta</p>
               </div>
-              </>
-            )
-
-            }
+            )}
           </div>
 
-         <LoginButton />
+          <LoginButton />
         </form>
         <div className="flex items-center justify-between mt-6">
           <div className="border-t w-full border-gray-300"></div>
@@ -107,7 +101,6 @@ export const LoginForm = () => {
   );
 };
 
-
 function LoginButton() {
   const { pending } = useFormStatus();
 
@@ -116,13 +109,12 @@ function LoginButton() {
       type="submit"
       disabled={pending}
       className={clsx(
-        "w-full py-2 rounded-lg transition", // Clases comunes
-        pending 
-          ? "bg-gray-400 text-gray-200 cursor-not-allowed" // Estilos si está pendiente
-          : "bg-red-600 text-white hover:bg-red-700" // Estilos normales
+        "w-full py-2 rounded-lg transition",
+        pending ? "bg-gray-400 text-gray-200 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700"
       )}
     >
       {pending ? "Cargando..." : "Iniciar Sesión"}
     </button>
   );
 }
+
