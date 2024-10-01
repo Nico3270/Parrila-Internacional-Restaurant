@@ -26,3 +26,5 @@ export * from './ui/precio/Precio';
 export * from './ui/side-bar/SideBar';
 export * from './ui/top-menu-mobile/TopMenuMobile';
 export * from './auth/login-form/LoginForm';
+export * from './providers/Provider';
+export * from './auth/register-form/RegisterForm';

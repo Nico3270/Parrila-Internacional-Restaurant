@@ -1,15 +1,26 @@
 "use client";
 
-import { useFormState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 import { authenticate } from '@/actions'; // Supongo que tienes una acción de autenticación
 import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
+import { IoInformationOutline } from 'react-icons/io5';
+import clsx from 'clsx';
+import { useEffect } from 'react';
+// import { useRouter } from 'next/navigation';
 
 
 export const LoginForm = () => {
   // `useFormState` maneja el estado del formulario, como la autenticación
   const [state, dispatch] = useFormState(authenticate, undefined);
-  console.log({state});
+  // const router = useRouter();
+  useEffect(() => {
+    if(state === "Success"){
+      // router.replace('/')
+      window.location.replace("/")
+
+    }
+  },[state])
 
 
   const handleGoogleLogin = () => {
@@ -54,12 +65,24 @@ export const LoginForm = () => {
               Olvidé mi contraseña
             </Link>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
-          >
-            Iniciar Sesión
-          </button>
+
+          <div
+          className='flex h-8 items-end space-x-1'
+          aria-live='polite'
+          aria-atomic="true">
+            { state === "CredentialsSignin" && (
+              <>
+              <div className="flex flex-row mb-2">
+                <IoInformationOutline className="h-5 w-5 text-red-500"  />
+                <p className='text-sm text-red-500'>La información no es correcta</p>
+              </div>
+              </>
+            )
+
+            }
+          </div>
+
+         <LoginButton />
         </form>
         <div className="flex items-center justify-between mt-6">
           <div className="border-t w-full border-gray-300"></div>
@@ -83,3 +106,23 @@ export const LoginForm = () => {
     </div>
   );
 };
+
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className={clsx(
+        "w-full py-2 rounded-lg transition", // Clases comunes
+        pending 
+          ? "bg-gray-400 text-gray-200 cursor-not-allowed" // Estilos si está pendiente
+          : "bg-red-600 text-white hover:bg-red-700" // Estilos normales
+      )}
+    >
+      {pending ? "Cargando..." : "Iniciar Sesión"}
+    </button>
+  );
+}

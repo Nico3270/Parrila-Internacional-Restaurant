@@ -8,6 +8,7 @@ import { tituloLogo } from "@/config/fonts";
 import { MenuSectionsBar, SideBar } from "@/components";
 import { useCartStore, useFavoritesStore } from "@/store";
 
+
 export const TopMenu = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const totalItemsInCart = useCartStore((state) => state.getTotalItems());
