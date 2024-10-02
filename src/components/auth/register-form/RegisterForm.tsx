@@ -5,9 +5,10 @@ import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import clsx from "clsx";
-import {  login } from "@/actions";
 import { signIn } from "next-auth/react"; // Importar signIn de NextAuth
 import { registerUser } from "@/actions/auth/register";
+import { login } from "@/actions/auth/login";
+
 
 type FormInputs = {
   name: string;

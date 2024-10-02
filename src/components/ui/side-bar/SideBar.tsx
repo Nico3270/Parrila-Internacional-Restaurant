@@ -19,8 +19,8 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import LocalGroceryStoreRoundedIcon from "@mui/icons-material/LocalGroceryStoreRounded";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
-import { logout } from "@/actions";
 import { useSession } from "next-auth/react";
+import { logout } from "@/actions/auth/logout";
 
 interface SideBarProps {
   open: boolean;

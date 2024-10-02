@@ -7,7 +7,8 @@ import { IoInformationOutline } from 'react-icons/io5';
 import clsx from 'clsx';
 import { useEffect } from 'react';
 import { signIn } from 'next-auth/react';
-import { authenticate } from '@/actions';
+import { authenticate } from '@/actions/auth/login';
+
 
 // import { useRouter } from 'next/navigation';
 
