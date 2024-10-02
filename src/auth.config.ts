@@ -14,38 +14,48 @@ export const authConfig: NextAuthConfig = {
 
   callbacks: {
     async jwt({ token, user }) {
+      // Si el usuario acaba de iniciar sesión
       if (user) {
-        token.data = user;
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email?.toLowerCase() }
+        });
+        if (dbUser) {
+          // Guardamos el ID de la base de datos en el token JWT
+          token.id = dbUser.id;
+          token.data = { ...user, id: dbUser.id }; // Actualizamos el token con la información del usuario en la BD
+        }
       }
       return token;
     },
 
     async session({ session, token }) {
+      // Guardamos el ID del token en la sesión
       session.user = token.data as any;
+
       return session;
     },
 
     async signIn({ account, profile }) {
-      // Verificamos que el proveedor es Google
+      // Si es inicio de sesión con Google
       if (account?.provider === 'google') {
-        // Si el perfil existe y el correo no está verificado, lanzamos un error
         if (profile && !profile.email_verified) {
           throw new Error('El correo no está verificado.');
         }
 
-        // Verificamos si el usuario ya existe en la base de datos
+        // Buscamos al usuario en la base de datos
         const existingUser = await prisma.user.findUnique({
           where: { email: profile?.email?.toLowerCase() },
         });
 
-        // Si el usuario no existe, lo creamos
+        // Si no existe, lo creamos
         if (!existingUser) {
           await prisma.user.create({
             data: {
               name: profile?.name || '',
               email: profile?.email?.toLowerCase() || '',
-              // Contraseña aleatoria ya que no se utiliza en el flujo de Google
+              // Contraseña aleatoria ya que no se usa en el flujo de Google
               password: bcryptjs.hashSync(Math.random().toString(36).slice(-8)),
+              image: profile?.picture // Almacenamos la imagen de perfil de Google si está disponible
             },
           });
         }
@@ -73,18 +83,18 @@ export const authConfig: NextAuthConfig = {
 
         const { email, password } = parsedCredentials.data;
 
-        // Buscar el correo y la contraseña
+        // Buscar el correo en la base de datos
         const user = await prisma.user.findUnique({
           where: { email: email.toLowerCase() },
         });
         if (!user) return null;
 
-        // Compara las contraseñas
-        if (!bcryptjs.compareSync(password, user.password)) return null;
+        // Comparamos las contraseñas
+        const passwordMatch = bcryptjs.compareSync(password, user.password);
+        if (!passwordMatch) return null;
 
         // Retorna el usuario sin la contraseña
         const { password: _, ...rest } = user;
-        console.log(bcryptjs.hashSync(_));
 
         return rest;
       },
