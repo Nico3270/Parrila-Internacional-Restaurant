@@ -9,7 +9,6 @@ import { signIn } from "next-auth/react"; // Importar signIn de NextAuth
 import { registerUser } from "@/actions/auth/register";
 import { login } from "@/actions/auth/login";
 
-
 type FormInputs = {
   name: string;
   email: string;
@@ -18,6 +17,7 @@ type FormInputs = {
 
 export const RegisterForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
+  const [isPending, setIsPending] = useState(false); // Estado de carga
   const {
     register,
     handleSubmit,
@@ -26,12 +26,14 @@ export const RegisterForm = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     setErrorMessage("");
+    setIsPending(true); // Iniciar estado de carga
     const { name, email, password } = data;
 
     // Registrar usuario con nombre, email y contraseña
     const response = await registerUser(name, email, password);
     if (!response.ok) {
       setErrorMessage(response.message);
+      setIsPending(false); // Terminar estado de carga si hay error
       return;
     }
 
@@ -43,15 +45,18 @@ export const RegisterForm = () => {
   // Iniciar sesión con Google (en lugar de registro separado)
   const handleGoogleRegister = async () => {
     try {
+      setIsPending(true); // Iniciar estado de carga
       // Autenticación con Google usando NextAuth
       const response = await signIn("google", { redirect: true });
 
       if (response?.error) {
         // Si hay un error, mostrar mensaje
         setErrorMessage("No se pudo completar el inicio de sesión con Google");
+        setIsPending(false); // Terminar estado de carga si hay error
       }
     } catch (error) {
       setErrorMessage("No se pudo completar el inicio de sesión con Google");
+      setIsPending(false); // Terminar estado de carga si hay error
     }
   };
 
@@ -143,9 +148,13 @@ export const RegisterForm = () => {
 
           <button
             type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+            disabled={isPending} // Deshabilitar el botón mientras está en estado pendiente
+            className={clsx(
+              "w-full py-2 rounded-lg transition",
+              isPending ? "bg-gray-400 text-gray-200 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700"
+            )}
           >
-            Crear cuenta
+            {isPending ? "Cargando..." : "Crear cuenta"} {/* Cambiar texto según el estado */}
           </button>
         </form>
 
@@ -158,18 +167,19 @@ export const RegisterForm = () => {
         {/* Botón para iniciar sesión con Google */}
         <button
           onClick={handleGoogleRegister}
-          className="w-full flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg mt-4 hover:bg-blue-700 transition"
+          disabled={isPending} // Deshabilitar el botón mientras está en estado pendiente
+          className={clsx(
+            "w-full flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg mt-4",
+            isPending ? "bg-gray-400 cursor-not-allowed" : "hover:bg-blue-700 transition"
+          )}
         >
           <FaGoogle className="mr-2" />
-          Iniciar con Google
+          {isPending ? "Cargando..." : "Iniciar con Google"} {/* Cambiar texto según el estado */}
         </button>
 
         <div className="text-center mt-4">
           <span>¿Ya tienes cuenta?</span>
-          <Link
-            href="/auth/login"
-            className="text-red-600 hover:underline ml-1"
-          >
+          <Link href="/auth/login" className="text-red-600 hover:underline ml-1">
             Inicia sesión
           </Link>
         </div>

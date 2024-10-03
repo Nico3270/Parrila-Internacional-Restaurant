@@ -68,6 +68,7 @@ const menuConfig: Record<
   ],
   server: [
     { name: "Perfil", link: "/profile", icon: <PeopleIcon /> },
+    { name: "Perfil", link: "/profile", icon: <PeopleIcon /> },
     { name: "Personal", link: "/server", icon: <FlatwareRoundedIcon /> },
     {
       name: "Órdenes",
@@ -76,6 +77,7 @@ const menuConfig: Record<
     },
   ],
   kitchen: [
+    { name: "Perfil", link: "/profile", icon: <PeopleIcon /> },
     { name: "Cocina", link: "/kitchen", icon: <DiningRoundedIcon /> },
     {
       name: "Órdenes",
@@ -84,6 +86,7 @@ const menuConfig: Record<
     },
   ],
   delivery: [
+    { name: "Perfil", link: "/profile", icon: <PeopleIcon /> },
     { name: "Domicilio", link: "/delivery", icon: <MopedRoundedIcon /> },
     {
       name: "Órdenes",

@@ -28,3 +28,4 @@ export * from './ui/top-menu-mobile/TopMenuMobile';
 export * from './auth/login-form/LoginForm';
 export * from './providers/Provider';
 export * from './auth/register-form/RegisterForm';
+export * from './ui/address-form/AddressForm';
