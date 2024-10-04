@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link"; // Usamos Link de Next.js para la redirección
 import clsx from "clsx";
-import { useCartStore } from "@/store";
+import { useCartStore, usePreferenceDelivey } from "@/store";
 import { Precio } from "@/components/ui/precio/Precio";
 
 export const OrderSummaryWithActions = () => {
@@ -11,6 +11,9 @@ export const OrderSummaryWithActions = () => {
   const totalPrice = useCartStore((state) => state.getTotalPrice());
   const [isMounted, setIsMounted] = useState(false);
   const [deliveryOption, setDeliveryOption] = useState<string | null>(null); // Estado para la opción seleccionada
+  
+  // Llamar correctamente el setPreference sin paréntesis
+  const setPreference = usePreferenceDelivey((state) => state.setPreference);
 
   useEffect(() => {
     setIsMounted(true);
@@ -18,7 +21,15 @@ export const OrderSummaryWithActions = () => {
 
   // Maneja el cambio de la opción seleccionada
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDeliveryOption(event.target.value);
+    const selectedOption = event.target.value;
+    setDeliveryOption(selectedOption);
+    
+    // Actualizamos la preferencia en el estado global
+    if (selectedOption === "restaurante") {
+      setPreference("restaurant");
+    } else if (selectedOption === "domicilio") {
+      setPreference("delivery");
+    }
   };
 
   // Si el componente no está montado, no mostramos nada para evitar errores de hidratación
@@ -30,11 +41,11 @@ export const OrderSummaryWithActions = () => {
     <div>
       <h2 className="text-xl font-bold mb-4">Resumen de tu orden</h2>
       <p>Cantidad de artículos: {totalItems}</p>
-      <p>Total a pagar: {<Precio value={totalPrice}/>}</p>
+      <p>Total a pagar: {<Precio value={totalPrice} />}</p>
 
       <div className="mt-4">
         <h3 className="text-lg font-semibold mb-2">¿Cómo prefieres recibir tu comida?</h3>
-        
+
         <div className="flex items-center mb-2">
           <input
             type="radio"
