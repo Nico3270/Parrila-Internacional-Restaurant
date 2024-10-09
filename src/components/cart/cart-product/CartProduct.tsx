@@ -41,12 +41,12 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
   return (
     <div className="flex flex-col md:flex-row items-start p-4 border rounded-lg shadow-md bg-white relative max-w-full md:max-w-[600px]">
       {/* Imagen del producto centrada verticalmente */}
-      <div className="flex-shrink-0 w-full md:w-48 h-48 flex items-center justify-center">
+      <div className="flex-shrink-0 w-full md:w-40 h-40 flex items-center justify-center">
         <Image
           src={`/imgs/${product.image}`}
           alt={product.title}
-          width={192}
-          height={192}
+          width={160}
+          height={160}
           className="rounded-lg object-cover"
         />
       </div>
@@ -56,7 +56,7 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
         {/* Título y botón de eliminar alineado a la derecha */}
         <div className="flex justify-between items-start w-full">
           <Link href={`/product/${product.slug}`}>
-            <h2 className="text-xl font-semibold text-red-500">{product.title}</h2>
+            <h2 className="text-lg font-semibold text-red-500">{product.title}</h2>
           </Link>
 
           <button
@@ -68,7 +68,7 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
         </div>
 
         {/* Opciones de personalización con scroll */}
-        <div className="mt-2">
+        <div className="mt-2 space-y-2">
           <div className="max-h-24 overflow-y-auto">
             <PersonalizationOptions
               customizationOptions={{ extras: product.opcionesDisponibles || [] }}
@@ -79,7 +79,7 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
         </div>
 
         {/* Recomendación / comentario */}
-        <div className="mt-2">
+        <div className="mt-2 ">
           <RecommendationSection
             comment={product.comentario || ""}
             onUpdateComment={handleCommentChange}

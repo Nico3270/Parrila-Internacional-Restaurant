@@ -1,6 +1,7 @@
 "use client";
 
-import { CartCheckout, OrderCheckoutSummary } from "@/components";
+import { CartCheckout } from "@/components";
+import OrderCheckoutSummary from "@/components/checkout/OrderCheckoutSummary";
 
 
 

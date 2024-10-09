@@ -4,43 +4,69 @@ import { FaChair } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore, usePreferenceDelivey, useAddressStore } from "@/store";
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 import { Precio } from "../ui/precio/Precio";
+import { signIn, useSession } from "next-auth/react"; // Importar hooks de next-auth
 
-export const OrderCheckoutSummary = () => {
+export default function OrderCheckoutSummary() {
   const preference = usePreferenceDelivey((state) => state.preference);
   const totalPrecio = useCartStore((state) => state.getTotalPrice());
   const cartItems = useCartStore((state) => state.cart);
   const address = useAddressStore((state) => state.address);
-
+  const { data: session } = useSession(); // Obtener el estado de sesión
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Estado de montaje del cliente
   const [mesa, setMesa] = useState(""); // Estado para el número de mesa
   const [error, setError] = useState(""); // Estado para mostrar mensajes de error
+  const [isLoading, setIsLoading] = useState(false); // Estado para la carga al crear la orden
 
+  // Marcar cuando el componente está montado
   useEffect(() => {
-    setIsMounted(true); // Marcar que el componente está montado en el cliente
+    setIsMounted(true);
   }, []);
 
-  // Si la preferencia es "delivery" pero no hay dirección, redirigir
+  // Redirigir si la preferencia es "delivery" pero no hay dirección disponible
   useEffect(() => {
     if (isMounted && preference === "delivery" && !address?.address) {
       router.push("/checkout/address");
     }
   }, [isMounted, preference, address, router]);
 
-  const handleConfirmOrder = () => {
+  // Manejo de la confirmación del pedido
+  const handleConfirmOrder = async () => {
     if (preference === "restaurant" && mesa.trim() === "") {
       setError("Por favor, ingresa el número de mesa.");
     } else {
-      // Lógica para confirmar el pedido
-      setError(""); // Limpiar el error si está todo bien
-      // Aquí puedes proceder a la lógica de confirmación
+      setError(""); // Limpiar cualquier error previo
+      setIsLoading(true); // Mostrar un indicador de carga
+
+      // Verificar si el usuario está autenticado
+      if (!session) {
+        // Si no está autenticado, redirigir al login con callbackUrl
+        await signIn(undefined, { callbackUrl: '/orders' });
+      } else {
+        // Si está autenticado, redirigir directamente a /orders
+        router.push("/orders");
+      }
+
+      setIsLoading(false); // Desactivar el estado de carga
     }
   };
 
-  // Evitar la renderización del contenido hasta que el cliente esté montado
+  // Evitar renderizar contenido hasta que el cliente esté montado
   if (!isMounted) {
-    return null; // No renderiza nada hasta que el cliente esté listo
+    return null;
+  }
+
+  // Mostrar un indicador de carga si se está procesando la orden
+  if (isLoading) {
+    return (
+      <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row" alignItems="center" justifyContent="center" height="100vh">
+        <CircularProgress color="success" />
+        <span>Creando orden...</span>
+      </Stack>
+    );
   }
 
   return (
@@ -114,4 +140,4 @@ export const OrderCheckoutSummary = () => {
       </div>
     </div>
   );
-};
+}

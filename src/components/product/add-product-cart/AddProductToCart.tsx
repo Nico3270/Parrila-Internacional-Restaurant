@@ -10,6 +10,8 @@ import {
 import { CartProduct, Product } from "@/interfaces";
 import { useCartStore } from "@/store";
 import { v4 as uuidv4 } from "uuid";
+import { useSession, signIn } from "next-auth/react"; // Importar hooks de autenticación
+
 
 interface AddToCartProps {
   product: Product; // El producto es pasado como prop
@@ -17,6 +19,8 @@ interface AddToCartProps {
 
 export const AddToCart: React.FC<AddToCartProps> = ({ product }) => {
   const addProductToCart = useCartStore(state => state.addProductToCart);
+  const { data: session } = useSession(); // Obtener el estado de sesión
+  
   
   const [selectedOptions, setSelectedOptions] = useState<
     { name: string; price: number }[]
@@ -27,7 +31,12 @@ export const AddToCart: React.FC<AddToCartProps> = ({ product }) => {
   
   
   const AddProductToCartPrueba = () => {
-    
+    if (!session) {
+      // Si no está autenticado, redirigir al login
+      signIn(undefined, { callbackUrl: `/product/${product.slug}` });
+      return;
+    }
+
     const productToAdd: CartProduct = {
       cartItemId: uuidv4(),
       id: product.id,
